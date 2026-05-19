@@ -1,0 +1,102 @@
+[
+  {
+    "id": "seed-beetroot-chutney",
+    "title": "Beetroot Chutney",
+    "serves": "Makes ~3 jars",
+    "tags": ["chutney", "preserve", "beetroot", "vegetarian"],
+    "image": "",
+    "ingredients": [
+      "500g (17.6 oz) raw beetroot, peeled and diced into 1cm cubes",
+      "1 large Bramley apple, peeled and diced into cubes",
+      "1 red onion, finely diced",
+      "240ml (1 cup) red wine vinegar",
+      "250g (1 + 1/8 cup) caster sugar",
+      "1 bay leaf",
+      "1/2 tsp ground coriander",
+      "1/2 tsp ground ginger",
+      "1/2 tsp salt"
+    ],
+    "method": [
+      "After preparing the vegetables on a chopping board with a sharp knife, tip all the ingredients into a large saucepan.",
+      "Place over a medium/high heat and bring to the boil, stirring every now and then.",
+      "Reduce the heat and gently simmer for around 25–30 minutes, until the beetroot is tender. Stir frequently to ensure even cooking. Meanwhile, preheat your oven to 190°C / Fan 180°C / 374°F.",
+      "Place your jar(s) (not including metal lids or rubber seals) on a baking tray and put into the preheated oven for 20 minutes to sterilise.",
+      "Once the beetroot is tender, bring the mixture to the boil again. Stir continuously and cook until it has reduced to a sticky jam-like consistency. This will take around 15–20 minutes.",
+      "With the beetroot chutney still hot (be careful not to burn yourself), decant the chutney into the hot jar(s).",
+      "Seal immediately and allow to cool completely."
+    ]
+  },
+  {
+    "id": "seed-leek-potato",
+    "title": "Leek and Potato Soup",
+    "serves": "4",
+    "tags": ["soup", "vegetarian", "classic"],
+    "image": "",
+    "ingredients": [
+      "2 tablespoons unsalted butter",
+      "2 large leeks, white and pale green parts only, sliced lengthways and roughly chopped",
+      "1 quart homemade or store-bought low-sodium chicken stock",
+      "4 medium russet potatoes, peeled and cut into quarters (about 3/4 pound)",
+      "1 bay leaf",
+      "Sea salt and freshly ground black pepper",
+      "1 cup buttermilk",
+      "1/2 cup heavy cream",
+      "1/2 teaspoon freshly ground nutmeg",
+      "Sliced chives for serving"
+    ],
+    "method": [
+      "Heat butter in a large saucepan or Dutch oven over medium heat until melted. Add leeks, reduce heat to low, and cook, stirring frequently, until very soft but not browned, 10 to 15 minutes.",
+      "Add stock, potatoes, and bay leaf, and season lightly with salt and pepper. Bring to a boil over high heat, reduce to a gentle simmer, cover, and cook until potatoes are fall-apart tender, about 15 minutes.",
+      "Remove potatoes from soup using tongs and transfer to a bowl. Set aside. Discard bay leaf. Transfer remaining soup to a blender. Slowly increase blender speed to high and blend until completely smooth, about 2 minutes. Return soup to a clean pot.",
+      "Press potatoes through a potato ricer or food mill into the pot with the soup. Whisk in buttermilk and heavy cream. Whisking frequently, bring soup to a simmer over medium-high heat. Whisk in grated nutmeg. Season to taste with salt and pepper and serve with chives or scallions."
+    ]
+  },
+  {
+    "id": "seed-pea-mint",
+    "title": "Pea and Mint Soup",
+    "serves": "4–6",
+    "tags": ["soup", "vegetarian", "summer"],
+    "image": "",
+    "ingredients": [
+      "1 kg frozen garden peas",
+      "1 large fennel",
+      "1 small celery",
+      "1 large bunch of fresh mint",
+      "3 inches of ginger",
+      "1 large onion",
+      "150ml natural yogurt"
+    ],
+    "method": [
+      "(Method to be written — add your own steps via the edit button.)"
+    ]
+  },
+  {
+    "id": "seed-tomato-basil",
+    "title": "Roasted Tomato and Basil Soup",
+    "serves": "4",
+    "tags": ["soup", "vegetarian", "tomato"],
+    "image": "",
+    "ingredients": [
+      "1 large onion",
+      "4 large cloves of garlic",
+      "1 tablespoon of ghee",
+      "12 large vine tomatoes",
+      "1 level teaspoon of smoked paprika",
+      "1 level teaspoon of baking powder",
+      "Pinch of chilli flakes",
+      "100ml double cream",
+      "6 large fresh basil leaves"
+    ],
+    "method": [
+      "Place the tomatoes in a large Pyrex roasting dish.",
+      "Roast for 1 hour at 180°C.",
+      "While the tomatoes are roasting, finely chop the onion and garlic.",
+      "Heat the ghee in a large soup pot and sauté the onion and garlic on low heat.",
+      "When the onions are translucent, add the smoked paprika.",
+      "When the tomatoes have split and are turning brown on top, take them out of the oven and add to the soup pot, including all the liquid.",
+      "Add the baking powder, stir, then boil for 10 minutes with the lid on to preserve the liquid.",
+      "Turn off the heat, add the cream and basil leaves.",
+      "Blend with a stick blender until smooth."
+    ]
+  }
+]
