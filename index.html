@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Cookbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f2ede2;
+    --paper-2:#ebe5d6;
+    --ink:#1a1714;
+    --ink-soft:#4a4138;
+    --rule:#1a1714;
+    --ribbon:#8b2c1a;        /* typewriter ribbon red */
+    --ribbon-soft:#b04a32;
+    --tag-bg:#1a1714;
+    --tag-fg:#f2ede2;
+    --shadow: 0 1px 0 rgba(0,0,0,.05), 0 12px 24px -16px rgba(0,0,0,.18);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Courier Prime','Courier New',ui-monospace,monospace;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 18% 8%, rgba(0,0,0,.04), transparent 38%),
+      radial-gradient(circle at 82% 92%, rgba(139,44,26,.05), transparent 40%),
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    min-height:100vh;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .display{font-family:'Special Elite','Courier Prime',monospace;letter-spacing:.01em}
+
+  /* ---------- masthead ---------- */
+  header.mast{
+    max-width:1080px;
+    margin:0 auto;
+    padding:56px 32px 28px;
+    text-align:center;
+  }
+  h1.title{
+    font-family:'Special Elite',monospace;
+    font-size:clamp(36px,6vw,60px);
+    margin:0;
+    font-weight:400;
+    letter-spacing:.02em;
+  }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    max-width:1080px;
+    margin:0 auto;
+    padding:0 32px 8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .search{
+    flex:1 1 240px;
+    display:flex;
+    align-items:center;
+    border-bottom:1.5px solid var(--ink);
+    padding:6px 0;
+  }
+  .search input{
+    flex:1;
+    border:0;background:transparent;outline:none;
+    font:inherit;color:inherit;
+    padding:4px 8px;
+  }
+  .search::before{
+    content:"";
+    display:inline-block;
+    width:11px;height:11px;
+    border:1.5px solid var(--ink);
+    border-radius:50%;
+    margin-right:4px;
+    transform:translate(2px,1px);
+  }
+  .tag-filter{
+    display:flex;flex-wrap:wrap;gap:6px;
+    padding:6px 0;
+  }
+  .pill{
+    font-family:'Courier Prime',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:4px 10px;
+    border:1.2px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .pill:hover{background:var(--ink);color:var(--paper)}
+  .pill.active{background:var(--ink);color:var(--paper)}
+  .util{
+    display:flex;gap:8px;
+  }
+  .util button{
+    font-family:'Courier Prime',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    padding:6px 12px;
+    border:1.2px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  .util button:hover{background:var(--ink);color:var(--paper)}
+
+  /* ---------- grid ---------- */
+  main{
+    max-width:1080px;
+    margin:0 auto;
+    padding:24px 32px 160px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:32px 28px;
+  }
+  .card{
+    cursor:pointer;
+    background:var(--paper-2);
+    border:1px solid var(--ink);
+    box-shadow:var(--shadow);
+    display:flex;flex-direction:column;
+    transition:transform .18s ease, box-shadow .18s ease;
+    position:relative;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 1px 0 rgba(0,0,0,.05), 0 20px 36px -18px rgba(0,0,0,.28);
+  }
+  .card .thumb{
+    width:100%;
+    aspect-ratio:4/3;
+    background:#d8d0bc;
+    background-size:cover;
+    background-position:center;
+    border-bottom:1px solid var(--ink);
+    position:relative;
+    overflow:hidden;
+  }
+  .thumb.placeholder::after{
+    content:"NO PHOTOGRAPH";
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:11px;letter-spacing:.3em;color:#6b6354;
+    font-family:'Special Elite',monospace;
+  }
+  .card .body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card h2{
+    font-family:'Special Elite',monospace;
+    font-size:22px;font-weight:400;
+    margin:0;
+    line-height:1.2;
+  }
+  .meta{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+  .tag{
+    font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    background:var(--tag-bg);color:var(--tag-fg);
+    padding:3px 8px;
+  }
+  .empty{
+    text-align:center;
+    padding:80px 20px;
+    color:var(--ink-soft);
+    font-family:'Special Elite',monospace;
+    letter-spacing:.16em;
+  }
+
+  /* ---------- FAB ---------- */
+  .fab{
+    position:fixed;
+    right:28px;bottom:28px;
+    width:64px;height:64px;
+    border-radius:50%;
+    background:var(--ribbon);
+    color:var(--paper);
+    border:2px solid var(--ink);
+    box-shadow:0 10px 22px -8px rgba(0,0,0,.4);
+    cursor:pointer;
+    font-size:32px;line-height:1;
+    font-family:'Special Elite',monospace;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .15s;
+    z-index:50;
+  }
+  .fab:hover{transform:scale(1.06) rotate(90deg)}
+  .fab:active{transform:scale(.96)}
+
+  /* ---------- modal ---------- */
+  .scrim{
+    position:fixed;inset:0;
+    background:rgba(20,18,14,.55);
+    backdrop-filter:blur(2px);
+    display:none;
+    z-index:100;
+    overflow-y:auto;
+    padding:24px 16px;
+  }
+  .scrim.open{display:block}
+  .sheet{
+    max-width:780px;
+    margin:24px auto;
+    background:var(--paper);
+    border:1px solid var(--ink);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.5);
+    padding:36px 40px 44px;
+    position:relative;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .sheet .close{
+    position:absolute;top:14px;right:18px;
+    background:transparent;border:0;
+    font-family:'Special Elite',monospace;
+    font-size:24px;cursor:pointer;color:var(--ink);
+    padding:4px 10px;
+    line-height:1;
+  }
+  .sheet .close:hover{color:var(--ribbon)}
+
+  .recipe-hero{
+    width:calc(100% + 80px);
+    margin:-36px -40px 24px;
+    aspect-ratio:16/7;
+    background:#d8d0bc;
+    background-size:cover;background-position:center;
+    border-bottom:1px solid var(--ink);
+  }
+  .recipe-hero.placeholder{display:none}
+
+  .sheet h2.recipe-title{
+    font-family:'Special Elite',monospace;
+    font-size:clamp(28px,4vw,42px);
+    font-weight:400;
+    margin:0 0 8px;
+    line-height:1.1;
+  }
+  .recipe-meta{
+    font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+    display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  }
+  .recipe-meta .tags{margin:0}
+  .recipe-section{
+    margin-top:28px;
+  }
+  .recipe-section h3{
+    font-family:'Special Elite',monospace;
+    font-size:14px;letter-spacing:.36em;text-transform:uppercase;
+    font-weight:400;
+    margin:0 0 12px;
+    padding-bottom:6px;
+    border-bottom:1.5px solid var(--ink);
+  }
+  ul.ingredients{
+    list-style:none;padding:0;margin:0;
+    columns:2;column-gap:32px;
+  }
+  @media (max-width:560px){ ul.ingredients{columns:1} }
+  ul.ingredients li{
+    padding:4px 0 4px 18px;
+    position:relative;
+    break-inside:avoid;
+    font-size:14px;
+  }
+  ul.ingredients li::before{
+    content:"–";
+    position:absolute;left:0;color:var(--ribbon);
+  }
+  ol.method{
+    margin:0;padding:0;list-style:none;counter-reset:step;
+  }
+  ol.method li{
+    counter-increment:step;
+    padding:8px 0 8px 44px;
+    position:relative;
+    font-size:14.5px;
+    line-height:1.65;
+  }
+  ol.method li::before{
+    content:counter(step,decimal-leading-zero) ".";
+    position:absolute;left:0;top:8px;
+    font-family:'Special Elite',monospace;
+    color:var(--ribbon);
+    font-size:14px;
+    letter-spacing:.04em;
+  }
+
+  .actions{
+    margin-top:32px;
+    display:flex;gap:10px;flex-wrap:wrap;
+    border-top:1px dashed var(--ink);
+    padding-top:18px;
+  }
+  .actions button, .actions a.btn{
+    font-family:'Courier Prime',monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    padding:8px 14px;border:1.2px solid var(--ink);
+    background:transparent;color:var(--ink);
+    cursor:pointer;text-decoration:none;
+  }
+  .actions button:hover{background:var(--ink);color:var(--paper)}
+  .actions .danger:hover{background:var(--ribbon);border-color:var(--ribbon);color:var(--paper)}
+
+  /* ---------- form ---------- */
+  form.recipe-form .row{margin-bottom:18px}
+  form.recipe-form label{
+    display:block;
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  form.recipe-form input[type=text],
+  form.recipe-form input[type=number],
+  form.recipe-form textarea{
+    width:100%;
+    font:inherit;color:var(--ink);
+    background:transparent;
+    border:0;border-bottom:1.5px solid var(--ink);
+    padding:6px 2px;outline:none;
+    border-radius:0;
+  }
+  form.recipe-form textarea{
+    border:1.5px solid var(--ink);
+    padding:10px;
+    min-height:120px;
+    resize:vertical;
+    line-height:1.6;
+  }
+  form.recipe-form .two{
+    display:grid;grid-template-columns:1fr 1fr;gap:24px;
+  }
+  @media (max-width:560px){ form.recipe-form .two{grid-template-columns:1fr} }
+  form.recipe-form .hint{
+    font-size:11px;color:var(--ink-soft);
+    margin-top:5px;font-style:italic;
+  }
+  .img-preview{
+    width:100%;aspect-ratio:16/7;
+    background:#d8d0bc;background-size:cover;background-position:center;
+    border:1.5px solid var(--ink);
+    margin-bottom:10px;
+    position:relative;
+  }
+  .img-preview.empty::after{
+    content:"NO PHOTOGRAPH SELECTED";
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Special Elite',monospace;letter-spacing:.3em;font-size:11px;color:#6b6354;
+  }
+  .file-row{display:flex;gap:8px;align-items:center;margin-bottom:18px}
+  .file-row label.btn{
+    font-family:'Courier Prime',monospace;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    padding:7px 12px;border:1.2px solid var(--ink);
+    cursor:pointer;background:transparent;color:var(--ink);
+  }
+  .file-row label.btn:hover{background:var(--ink);color:var(--paper)}
+  .file-row input[type=file]{display:none}
+  .file-row .name{font-size:12px;color:var(--ink-soft)}
+
+  .submit-row{
+    margin-top:24px;
+    display:flex;gap:10px;justify-content:flex-end;
+    border-top:1px dashed var(--ink);
+    padding-top:20px;
+  }
+  .submit-row button{
+    font-family:'Courier Prime',monospace;
+    font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+    padding:9px 18px;
+    border:1.5px solid var(--ink);
+    background:transparent;color:var(--ink);
+    cursor:pointer;
+  }
+  .submit-row button.primary{background:var(--ink);color:var(--paper)}
+  .submit-row button.primary:hover{background:var(--ribbon);border-color:var(--ribbon)}
+  .submit-row button:hover{background:var(--ink);color:var(--paper)}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed;left:50%;bottom:24px;
+    transform:translate(-50%, 20px);
+    background:var(--ink);color:var(--paper);
+    padding:10px 18px;
+    font-family:'Courier Prime',monospace;
+    font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+    border:1px solid var(--ink);
+    box-shadow:0 14px 30px -10px rgba(0,0,0,.5);
+    opacity:0;pointer-events:none;
+    transition:opacity .2s, transform .25s;
+    z-index:200;
+    max-width:calc(100vw - 48px);
+    text-align:center;
+  }
+  #toast.show{opacity:1;transform:translate(-50%, 0)}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <h1 class="title">The&nbsp;Cookbook</h1>
+</header>
+
+<div class="toolbar">
+  <div class="search">
+    <input id="search" type="text" placeholder="search recipes…" autocomplete="off">
+  </div>
+  <div class="util">
+    <button id="exportBtn" title="Download a backup of recipes.json">Export</button>
+    <button id="signOutBtn" title="Forget the write password on this device">Sign out</button>
+  </div>
+</div>
+<div class="toolbar" style="padding-top:4px">
+  <div class="tag-filter" id="tagFilter"></div>
+</div>
+
+<main>
+  <section class="grid" id="grid"></section>
+  <div class="empty" id="empty" style="display:none">— NO RECIPES MATCH —</div>
+</main>
+
+<button class="fab" id="addBtn" title="Add a new recipe">+</button>
+
+<!-- view modal -->
+<div class="scrim" id="viewScrim">
+  <article class="sheet" id="viewSheet" role="dialog" aria-modal="true">
+    <button class="close" data-close>&times;</button>
+    <div class="recipe-hero" id="viewHero"></div>
+    <h2 class="recipe-title" id="viewTitle"></h2>
+    <div class="recipe-meta" id="viewMeta"></div>
+
+    <div class="recipe-section">
+      <h3>Ingredients</h3>
+      <ul class="ingredients" id="viewIngredients"></ul>
+    </div>
+
+    <div class="recipe-section">
+      <h3>Method</h3>
+      <ol class="method" id="viewMethod"></ol>
+    </div>
+
+    <div class="actions" id="viewActions"></div>
+  </article>
+</div>
+
+<!-- form modal -->
+<div class="scrim" id="formScrim">
+  <article class="sheet" role="dialog" aria-modal="true">
+    <button class="close" data-close>&times;</button>
+    <h2 class="recipe-title" id="formTitle">New Recipe</h2>
+    <div class="recipe-meta">— fill in &amp; commit to the book —</div>
+
+    <form class="recipe-form" id="recipeForm" autocomplete="off">
+      <div class="row">
+        <label for="f_title">Title</label>
+        <input type="text" id="f_title" required maxlength="120">
+      </div>
+
+      <div class="row">
+        <label>Photograph</label>
+        <div class="img-preview empty" id="imgPreview"></div>
+        <div class="file-row">
+          <label class="btn" for="f_image">Choose image</label>
+          <input type="file" id="f_image" accept="image/*">
+          <button type="button" id="clearImg" style="font:inherit;font-size:11px;letter-spacing:.22em;text-transform:uppercase;background:transparent;border:1.2px solid var(--ink);padding:7px 12px;cursor:pointer">Remove</button>
+          <span class="name" id="imgName"></span>
+        </div>
+      </div>
+
+      <div class="two">
+        <div class="row">
+          <label for="f_serves">Serves / Makes</label>
+          <input type="text" id="f_serves" placeholder="e.g. 4, or 'Makes 3 jars'">
+        </div>
+        <div class="row">
+          <label for="f_tags">Tags</label>
+          <input type="text" id="f_tags" placeholder="soup, vegetarian, winter">
+          <div class="hint">Comma-separated</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="f_ingredients">Ingredients</label>
+        <textarea id="f_ingredients" placeholder="One ingredient per line&#10;500g raw beetroot, peeled and diced&#10;1 large bramley apple, peeled and diced&#10;..."></textarea>
+        <div class="hint">One per line</div>
+      </div>
+
+      <div class="row">
+        <label for="f_method">Method</label>
+        <textarea id="f_method" style="min-height:200px" placeholder="One step per line. Numbers added automatically.&#10;Tip the ingredients into a large saucepan.&#10;Bring to the boil over medium heat.&#10;..."></textarea>
+        <div class="hint">One step per line — leave blank lines between if you like</div>
+      </div>
+
+      <div class="submit-row">
+        <button type="button" data-close>Cancel</button>
+        <button type="submit" class="primary" id="saveBtn">Save Recipe</button>
+      </div>
+    </form>
+  </article>
+</div>
+
+
+
+<script>
+/* ====================================================================
+   THE COOKBOOK
+   Read:  GET /data/recipes.json  (single source of truth, in git)
+   Write: POST /api/save-recipe   (Netlify Function commits to git)
+   Local cache: a 'freshness buffer' so your own device shows your
+                changes during the ~30–60s Netlify rebuild window.
+   ==================================================================== */
+
+const RECIPES_URL = '/data/recipes.json';
+const API_URL     = '/api/save-recipe';
+
+const LS_CACHE    = 'cookbook.cache.v1';
+const LS_PW       = 'cookbook.pw.v1';
+const CACHE_TTL   = 120 * 1000;  // 2 min — covers a typical rebuild
+
+/* ---------- state ---------- */
+let state = {
+  recipes: [],
+  activeTag: null,
+  query: '',
+  editingId: null,
+  saving: false
+};
+
+/* ---------- storage / fetch ---------- */
+function readCache() {
+  try {
+    const raw = localStorage.getItem(LS_CACHE);
+    if (!raw) return null;
+    const o = JSON.parse(raw);
+    if (!o || !Array.isArray(o.recipes)) return null;
+    return o;  // { recipes, savedAt }
+  } catch { return null; }
+}
+function writeCache(recipes) {
+  try {
+    localStorage.setItem(LS_CACHE, JSON.stringify({ recipes, savedAt: Date.now() }));
+  } catch (e) { console.warn('cache write failed', e); }
+}
+function clearCache() {
+  try { localStorage.removeItem(LS_CACHE); } catch {}
+}
+
+async function fetchRecipes() {
+  // Cache-bust to bypass Netlify CDN
+  const url = `${RECIPES_URL}?t=${Date.now()}`;
+  try {
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    if (!Array.isArray(data)) throw new Error('not an array');
+    return data;
+  } catch (e) {
+    console.warn('fetch recipes failed:', e);
+    return null;
+  }
+}
+
+async function loadInitial() {
+  const fetched = await fetchRecipes();
+  const cache = readCache();
+  const cacheFresh = cache && (Date.now() - cache.savedAt < CACHE_TTL);
+
+  if (fetched && !cacheFresh) {
+    state.recipes = fetched;
+    clearCache();        // git has caught up, drop the buffer
+  } else if (cacheFresh) {
+    state.recipes = cache.recipes;
+  } else if (fetched) {
+    state.recipes = fetched;
+  } else if (cache) {
+    state.recipes = cache.recipes;
+  } else {
+    state.recipes = [];
+  }
+}
+
+/* ---------- password ---------- */
+function getPassword() {
+  let pw = localStorage.getItem(LS_PW);
+  if (!pw) {
+    pw = prompt('Write password:');
+    if (pw) localStorage.setItem(LS_PW, pw);
+  }
+  return pw || '';
+}
+function clearPassword() {
+  localStorage.removeItem(LS_PW);
+}
+
+/* ---------- API ---------- */
+async function api(payload) {
+  const password = getPassword();
+  if (!password) throw new Error('Password required');
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ...payload, password })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 401) {
+    clearPassword();
+    throw new Error('Wrong password — try again');
+  }
+  if (!res.ok) {
+    throw new Error(data.error || `Save failed (${res.status})`);
+  }
+  return data;  // { ok, recipes, commit }
+}
+
+function uid() {
+  return 'r-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 7);
+}
+
+/* ---------- rendering ---------- */
+const grid = document.getElementById('grid');
+const emptyEl = document.getElementById('empty');
+const tagFilterEl = document.getElementById('tagFilter');
+
+function allTags() {
+  const set = new Set();
+  state.recipes.forEach(r => (r.tags || []).forEach(t => set.add(String(t).toLowerCase())));
+  return [...set].sort();
+}
+
+function renderTagFilter() {
+  tagFilterEl.innerHTML = '';
+  const tags = allTags();
+  if (!tags.length) return;
+  const all = document.createElement('button');
+  all.className = 'pill' + (state.activeTag === null ? ' active' : '');
+  all.textContent = 'All';
+  all.onclick = () => { state.activeTag = null; renderTagFilter(); renderGrid(); };
+  tagFilterEl.appendChild(all);
+  tags.forEach(t => {
+    const b = document.createElement('button');
+    b.className = 'pill' + (state.activeTag === t ? ' active' : '');
+    b.textContent = t;
+    b.onclick = () => { state.activeTag = (state.activeTag === t ? null : t); renderTagFilter(); renderGrid(); };
+    tagFilterEl.appendChild(b);
+  });
+}
+
+function matches(r) {
+  if (state.activeTag && !(r.tags || []).map(t => String(t).toLowerCase()).includes(state.activeTag)) return false;
+  if (state.query) {
+    const q = state.query.toLowerCase();
+    const hay = [
+      r.title,
+      (r.tags || []).join(' '),
+      (r.ingredients || []).join(' '),
+      (r.method || []).join(' '),
+      r.serves
+    ].join(' ').toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  return true;
+}
+
+function renderGrid() {
+  grid.innerHTML = '';
+  const list = state.recipes.filter(matches);
+  if (!list.length) { emptyEl.style.display = 'block'; return; }
+  emptyEl.style.display = 'none';
+
+  list.forEach(r => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.onclick = () => openView(r.id);
+
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+    if (r.image) {
+      thumb.style.backgroundImage = `url("${r.image}")`;
+    } else {
+      thumb.classList.add('placeholder');
+    }
+    c.appendChild(thumb);
+
+    const body = document.createElement('div');
+    body.className = 'body';
+    body.innerHTML = `
+      <h2>${escape(r.title)}</h2>
+      ${r.serves ? `<div class="meta">Serves · ${escape(r.serves)}</div>` : ''}
+      <div class="tags">
+        ${(r.tags || []).map(t => `<span class="tag">${escape(t)}</span>`).join('')}
+      </div>
+    `;
+    c.appendChild(body);
+    grid.appendChild(c);
+  });
+}
+
+function escape(s) {
+  return String(s ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+}
+
+/* ---------- view modal ---------- */
+const viewScrim = document.getElementById('viewScrim');
+function openView(id) {
+  const r = state.recipes.find(x => x.id === id);
+  if (!r) return;
+  const hero = document.getElementById('viewHero');
+  if (r.image) {
+    hero.style.backgroundImage = `url("${r.image}")`;
+    hero.classList.remove('placeholder');
+    hero.style.display = '';
+  } else {
+    hero.style.backgroundImage = '';
+    hero.style.display = 'none';
+  }
+  document.getElementById('viewTitle').textContent = r.title;
+  const meta = document.getElementById('viewMeta');
+  meta.innerHTML = '';
+  if (r.serves) {
+    const s = document.createElement('span');
+    s.textContent = `Serves · ${r.serves}`;
+    meta.appendChild(s);
+  }
+  if ((r.tags || []).length) {
+    const t = document.createElement('div');
+    t.className = 'tags';
+    t.innerHTML = r.tags.map(x => `<span class="tag">${escape(x)}</span>`).join('');
+    meta.appendChild(t);
+  }
+  document.getElementById('viewIngredients').innerHTML =
+    (r.ingredients || []).map(i => `<li>${escape(i)}</li>`).join('') || '<li><em>None listed</em></li>';
+  document.getElementById('viewMethod').innerHTML =
+    (r.method || []).map(m => `<li>${escape(m)}</li>`).join('') || '<li><em>No method written yet</em></li>';
+
+  const act = document.getElementById('viewActions');
+  act.innerHTML = '';
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.onclick = () => { closeAll(); openForm(r.id); };
+  act.appendChild(editBtn);
+
+  const delBtn = document.createElement('button');
+  delBtn.textContent = 'Delete';
+  delBtn.className = 'danger';
+  delBtn.onclick = async () => {
+    if (!confirm(`Delete "${r.title}"? This commits the deletion to git.`)) return;
+    delBtn.disabled = true; delBtn.textContent = 'Deleting…';
+    try {
+      const result = await api({ deleteId: r.id });
+      state.recipes = result.recipes;
+      writeCache(result.recipes);
+      renderAll(); closeAll();
+      flash('Deleted. Rebuilding…');
+    } catch (e) {
+      alert(e.message);
+      delBtn.disabled = false; delBtn.textContent = 'Delete';
+    }
+  };
+  act.appendChild(delBtn);
+
+  const printBtn = document.createElement('button');
+  printBtn.textContent = 'Print';
+  printBtn.onclick = () => window.print();
+  act.appendChild(printBtn);
+
+  viewScrim.classList.add('open');
+  viewScrim.scrollTop = 0;
+}
+
+/* ---------- form modal (add / edit) ---------- */
+const formScrim = document.getElementById('formScrim');
+const form = document.getElementById('recipeForm');
+const imgPreview = document.getElementById('imgPreview');
+const imgNameEl = document.getElementById('imgName');
+let currentImageData = '';     // base64 data URL of newly chosen image
+let currentImageExisting = ''; // pre-existing image URL on edit (no new upload)
+
+function openForm(id) {
+  state.editingId = id || null;
+  const r = id ? state.recipes.find(x => x.id === id) : null;
+  document.getElementById('formTitle').textContent = r ? 'Edit Recipe' : 'New Recipe';
+  document.getElementById('f_title').value = r ? r.title : '';
+  document.getElementById('f_serves').value = r ? (r.serves || '') : '';
+  document.getElementById('f_tags').value = r ? (r.tags || []).join(', ') : '';
+  document.getElementById('f_ingredients').value = r ? (r.ingredients || []).join('\n') : '';
+  document.getElementById('f_method').value = r ? (r.method || []).join('\n') : '';
+  currentImageData = '';
+  currentImageExisting = r ? (r.image || '') : '';
+  setPreview(currentImageExisting);
+  imgNameEl.textContent = '';
+  document.getElementById('f_image').value = '';
+  document.getElementById('saveBtn').disabled = false;
+  document.getElementById('saveBtn').textContent = 'Save Recipe';
+  formScrim.classList.add('open');
+  formScrim.scrollTop = 0;
+  setTimeout(() => document.getElementById('f_title').focus(), 50);
+}
+
+function setPreview(data) {
+  if (data) {
+    imgPreview.style.backgroundImage = `url("${data}")`;
+    imgPreview.classList.remove('empty');
+  } else {
+    imgPreview.style.backgroundImage = '';
+    imgPreview.classList.add('empty');
+  }
+}
+
+document.getElementById('f_image').addEventListener('change', async (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  imgNameEl.textContent = file.name + ' (processing…)';
+  try {
+    const data = await resizeImage(file, 1100, 0.82);
+    currentImageData = data;
+    setPreview(data);
+    const kb = Math.round(data.length / 1024);
+    imgNameEl.textContent = `${file.name} · ${kb} KB`;
+  } catch (err) {
+    console.error(err);
+    alert('Could not read image: ' + err.message);
+    imgNameEl.textContent = '';
+  }
+});
+
+document.getElementById('clearImg').onclick = () => {
+  currentImageData = '';
+  currentImageExisting = '';
+  setPreview('');
+  imgNameEl.textContent = '';
+  document.getElementById('f_image').value = '';
+};
+
+function resizeImage(file, maxDim, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('read error'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        const scale = Math.min(1, maxDim / Math.max(width, height));
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f2ede2';
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        try { resolve(canvas.toDataURL('image/jpeg', quality)); }
+        catch (e) { reject(e); }
+      };
+      img.onerror = () => reject(new Error('image decode error'));
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (state.saving) return;
+
+  const title = document.getElementById('f_title').value.trim();
+  if (!title) return;
+  const serves = document.getElementById('f_serves').value.trim();
+  const tags = document.getElementById('f_tags').value.split(',').map(s => s.trim()).filter(Boolean);
+  const ingredients = document.getElementById('f_ingredients').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  const method = document.getElementById('f_method').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+  const editing = state.editingId
+    ? state.recipes.find(r => r.id === state.editingId)
+    : null;
+
+  const recipe = {
+    id: editing ? editing.id : uid(),
+    title, serves, tags, ingredients, method,
+    // image: if a new one was chosen, function will replace; if cleared, send '';
+    //        if untouched on edit, send the existing URL so it's preserved.
+    image: currentImageData ? '' : currentImageExisting,
+    created: editing ? editing.created : new Date().toISOString()
+  };
+
+  const saveBtn = document.getElementById('saveBtn');
+  state.saving = true;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving…';
+
+  try {
+    const result = await api({
+      recipe,
+      imageDataUrl: currentImageData || undefined
+    });
+    state.recipes = result.recipes;
+    writeCache(result.recipes);
+    renderAll();
+    closeAll();
+    flash('Saved. Rebuilding — visible everywhere in about a minute.');
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    state.saving = false;
+    saveBtn.disabled = false;
+    saveBtn.textContent = 'Save Recipe';
+  }
+});
+
+/* ---------- close handling ---------- */
+function closeAll() {
+  viewScrim.classList.remove('open');
+  formScrim.classList.remove('open');
+  state.editingId = null;
+}
+document.addEventListener('click', (e) => {
+  if (e.target.matches('[data-close]')) closeAll();
+  if (e.target.classList.contains('scrim')) closeAll();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeAll();
+});
+
+/* ---------- toolbar wiring ---------- */
+document.getElementById('addBtn').onclick = () => openForm(null);
+
+document.getElementById('search').addEventListener('input', (e) => {
+  state.query = e.target.value.trim();
+  renderGrid();
+});
+
+document.getElementById('exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify(state.recipes, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url; a.download = `cookbook-${stamp}.json`;
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
+};
+
+document.getElementById('signOutBtn').onclick = () => {
+  clearPassword();
+  flash('Signed out. You will be prompted next time you save.');
+};
+
+/* ---------- toast ---------- */
+function flash(msg) {
+  let t = document.getElementById('toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(flash._tm);
+  flash._tm = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+/* ---------- boot ---------- */
+function renderAll() { renderTagFilter(); renderGrid(); }
+
+(async function boot() {
+  await loadInitial();
+  renderAll();
+})();
+</script>
+</body>
+</html>
